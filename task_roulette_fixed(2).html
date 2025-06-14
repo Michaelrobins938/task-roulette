@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎪 1-Minute Task Roulette - ADHD Edition</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Nosifer&family=Butcherman&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            min-height: 100vh;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 0, 0, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(75, 0, 130, 0.3) 0%, transparent 50%),
+                linear-gradient(135deg, #000000 0%, #0d0d0d 25%, #1a0f1a 50%, #0d0d0d 75%, #000000 100%);
+            color: #e0e0e0;
+            font-family: 'Butcherman', cursive;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(120, 0, 0, 0.03) 2px,
+                    rgba(120, 0, 0, 0.03) 4px
+                ),
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(75, 0, 130, 0.03) 2px,
+                    rgba(75, 0, 130, 0.03) 4px
+                );
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        /* Animated background particles */
+        .particle {
+            position: absolute;
+            background: radial-gradient(circle, #8b0000, #4b0082);
+            border-radius: 50%;
+            opacity: 0.2;
+            animation: float 8s ease-in-out infinite;
+            box-shadow: 0 0 20px rgba(139, 0, 0, 0.3);
+        }
+        
+        @keyframes float {
+            0%, 100% { 
+                transform: translateY(0px) rotate(0deg) scale(1); 
+                opacity: 0.2;
+            }
+            33% { 
+                transform: translateY(-30px) rotate(120deg) scale(1.1); 
+                opacity: 0.4;
+            }
+            66% { 
+                transform: translateY(-10px) rotate(240deg) scale(0.9); 
+                opacity: 0.1;
+            }
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .title {
+            font-family: 'Creepster', cursive;
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            color: #ff6b6b;
+            text-shadow: 
+                0 0 10px rgba(255, 107, 107, 0.8),
+                0 0 20px rgba(255, 107, 107, 0.6),
+                2px 2px 4px rgba(0, 0, 0, 0.8);
+            margin-bottom: 15px;
+            animation: ominousGlow 3s ease-in-out infinite alternate;
+            text-align: center;
+            line-height: 1.2;
+        }
+        
+        @keyframes ominousGlow {
+            from { 
+                text-shadow: 
+                    0 0 10px rgba(255, 107, 107, 0.8),
+                    0 0 20px rgba(255, 107, 107, 0.6),
+                    2px 2px 4px rgba(0, 0, 0, 0.8);
+                transform: scale(1);
+            }
+            to { 
+                text-shadow: 
+                    0 0 15px rgba(255, 107, 107, 1),
+                    0 0 25px rgba(255, 107, 107, 0.8),
+                    2px 2px 4px rgba(0, 0, 0, 0.8);
+                transform: scale(1.02);
+            }
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            color: #cccccc;
+            font-style: italic;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+            line-height: 1.4;
+        }
+        
+        .wheel-container {
+            position: relative;
+            width: 350px;
+            height: 350px;
+            margin: 0 auto 40px;
+            background: radial-gradient(circle, #1a1a1a 0%, #0d0d0d 70%, #000 100%);
+            border-radius: 50%;
+            border: 8px solid #2a2a2a;
+            box-shadow: 
+                0 0 50px rgba(139, 0, 0, 0.4),
+                inset 0 0 50px rgba(0, 0, 0, 0.8),
+                0 0 100px rgba(75, 0, 130, 0.2);
+        }
+        
+        .wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            position: relative;
+            transition: transform 4s cubic-bezier(0.23, 1, 0.32, 1);
+            background: conic-gradient(
+                #8b0000 0deg 36deg,
+                #4b0082 36deg 72deg,
+                #2f4f4f 72deg 108deg,
+                #800080 108deg 144deg,
+                #8b4513 144deg 180deg,
+                #556b2f 180deg 216deg,
+                #483d8b 216deg 252deg,
+                #2e8b57 252deg 288deg,
+                #8b008b 288deg 324deg,
+                #b8860b 324deg 360deg
+            );
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .wheel-section {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            transform-origin: right bottom;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+            padding: 10px;
+            text-align: center;
+        }
+        
+        .pointer {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 30px solid #8b0000;
+            z-index: 10;
+            filter: drop-shadow(0 0 15px rgba(139, 0, 0, 0.9));
+        }
+        
+        .current-task {
+            background: rgba(13, 13, 13, 0.95);
+            border: 2px solid #8b0000;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: center;
+            box-shadow: 
+                0 0 30px rgba(139, 0, 0, 0.3),
+                inset 0 0 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+        }
+        
+        .task-text {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #ff6b6b;
+            text-shadow: 
+                0 0 8px rgba(255, 107, 107, 0.8),
+                1px 1px 3px rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 0, 0.4);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+        }
+        
+        .dice-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 30px auto;
+            perspective: 1000px;
+        }
+        
+        .simple-dice {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #dc143c, #8b0000);
+            border: 3px solid #ff6b6b;
+            border-radius: 12px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            box-shadow: 
+                0 0 20px rgba(220, 20, 60, 0.6),
+                inset 0 0 10px rgba(255, 255, 255, 0.2);
+            transition: transform 0.1s ease;
+        }
+        
+        .simple-dice.rolling {
+            animation: diceRoll 2s ease-out;
+        }
+        
+        @keyframes diceRoll {
+            0% { 
+                transform: translate(-50%, -50%) rotateX(0deg) rotateY(0deg) scale(1);
+            }
+            25% { 
+                transform: translate(-50%, -50%) rotateX(180deg) rotateY(180deg) scale(1.1);
+            }
+            50% { 
+                transform: translate(-50%, -50%) rotateX(360deg) rotateY(360deg) scale(0.9);
+            }
+            75% { 
+                transform: translate(-50%, -50%) rotateX(540deg) rotateY(180deg) scale(1.1);
+            }
+            100% { 
+                transform: translate(-50%, -50%) rotateX(720deg) rotateY(720deg) scale(1);
+            }
+        }
+        
+        .button {
+            background: linear-gradient(135deg, #8b0000, #4b0082);
+            color: #e0e0e0;
+            border: 2px solid #2a2a2a;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 
+                0 0 20px rgba(139, 0, 0, 0.4),
+                inset 0 0 20px rgba(0, 0, 0, 0.3);
+            font-family: 'Butcherman', cursive;
+            margin: 10px;
+            text-shadow: 0 0 5px rgba(220, 20, 60, 0.5);
+        }
+        
+        .button:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 5px 25px rgba(139, 0, 0, 0.6),
+                0 0 30px rgba(75, 0, 130, 0.4);
+            background: linear-gradient(135deg, #a00000, #5d0099);
+        }
+        
+        .button:active {
+            transform: translateY(0);
+            box-shadow: 
+                inset 0 0 10px rgba(0, 0, 0, 0.5),
+                0 0 15px rgba(139, 0, 0, 0.3);
+        }
+        
+        .result {
+            text-align: center;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
+            line-height: 1.4;
+        }
+        
+        .result.success {
+            background: rgba(46, 139, 87, 0.4);
+            border: 2px solid #2e8b57;
+            color: #98fb98;
+            box-shadow: 0 0 20px rgba(46, 139, 87, 0.3);
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
+        }
+        
+        .result.failure {
+            background: rgba(139, 0, 0, 0.4);
+            border: 2px solid #8b0000;
+            color: #ffb6c1;
+            box-shadow: 0 0 20px rgba(139, 0, 0, 0.4);
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
+        }
+        
+        .result.critical {
+            background: rgba(220, 20, 60, 0.5);
+            border: 2px solid #dc143c;
+            color: #ffc0cb;
+            animation: criticalPulse 1s infinite;
+            box-shadow: 0 0 30px rgba(220, 20, 60, 0.6);
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
+        }
+        
+        .result.nat20 {
+            background: rgba(218, 165, 32, 0.5);
+            border: 2px solid #daa520;
+            color: #ffffe0;
+            animation: goldenCelebration 2s infinite;
+            box-shadow: 0 0 40px rgba(218, 165, 32, 0.5);
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
+        }
+        
+        @keyframes criticalPulse {
+            0%, 100% { 
+                transform: scale(1); 
+                box-shadow: 0 0 30px rgba(220, 20, 60, 0.6);
+            }
+            50% { 
+                transform: scale(1.05); 
+                box-shadow: 0 0 50px rgba(220, 20, 60, 0.9);
+            }
+        }
+        
+        @keyframes goldenCelebration {
+            0%, 100% { 
+                transform: scale(1) rotate(0deg); 
+                box-shadow: 0 0 40px rgba(218, 165, 32, 0.5);
+            }
+            25% { 
+                transform: scale(1.1) rotate(1deg); 
+                box-shadow: 0 0 60px rgba(255, 215, 0, 0.8);
+            }
+            75% { 
+                transform: scale(1.1) rotate(-1deg); 
+                box-shadow: 0 0 60px rgba(255, 215, 0, 0.8);
+            }
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            border-top: 1px solid #333;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .wheel-container {
+                width: 280px;
+                height: 280px;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+            
+            .dice-container {
+                width: 150px;
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated background particles -->
+    <div class="particles-container"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="title">🎪 1-MINUTE TASK ROULETTE</h1>
+            <p class="subtitle">Where procrastination meets probability, and your dopamine receptors place bets</p>
+        </div>
+        
+        <div class="wheel-container">
+            <div class="pointer"></div>
+            <div class="wheel" id="wheel">
+                <div class="wheel-section" style="transform: rotate(0deg);">1</div>
+                <div class="wheel-section" style="transform: rotate(36deg);">2</div>
+                <div class="wheel-section" style="transform: rotate(72deg);">3</div>
+                <div class="wheel-section" style="transform: rotate(108deg);">4</div>
+                <div class="wheel-section" style="transform: rotate(144deg);">5</div>
+                <div class="wheel-section" style="transform: rotate(180deg);">6</div>
+                <div class="wheel-section" style="transform: rotate(216deg);">7</div>
+                <div class="wheel-section" style="transform: rotate(252deg);">8</div>
+                <div class="wheel-section" style="transform: rotate(288deg);">9</div>
+                <div class="wheel-section" style="transform: rotate(324deg);">10</div>
+            </div>
+        </div>
+        
+        <div class="text-center">
+            <button class="button" onclick="spinWheel()">🎲 SPIN THE WHEEL OF MILD INCONVENIENCE</button>
+        </div>
+        
+        <div class="current-task hidden" id="currentTask">
+            <div class="task-text" id="taskText"></div>
+            <p style="color: #999; margin-bottom: 20px;">Now, roll the die to see if the universe demands your compliance...</p>
+            
+            <div class="dice-container">
+                <div class="simple-dice" id="simpleDice">?</div>
+            </div>
+            
+            <button class="button" onclick="rollDice()">🎲 ROLL THE DICE OF DESTINY</button>
+        </div>
+        
+        <div class="result hidden" id="result"></div>
+        
+        <div class="footer">
+            <p>⚠️ WARNING: This digital séance may cause sudden bursts of productivity, existential dread, or the revolutionary act of basic human maintenance.</p>
+            <p style="margin-top: 10px;">Side effects include: actually communicating with humans, mild organizational behavior, brief flashes of self-preservation, and the terrifying realization that you are, in fact, a biological entity requiring sustenance.</p>
+            <p style="margin-top: 10px; font-size: 0.9rem; color: #666;">🌙 Crafted in the shadows for those who dance with chaos and call it "executive function"</p>
+        </div>
+    </div>
+
+    <script>
+        const tasks = [
+            "Text someone you haven't talked to in forever (yes, that person who's been on your mind for 3 months)",
+            "Throw away something you don't need (that expired coupon from 2019 counts)",
+            "Do 10 jumping jacks (your brain will hate this, your body will pretend to be surprised)",
+            "Organize one tiny area of chaos (just one! We're not monsters here)",
+            "Write down three things that are bothering you (emotional archaeology, but faster)",
+            "Drink a glass of water like the human you allegedly are (shocking concept, we know)",
+            "Compliment yourself out loud (yes, out loud, your houseplants need to hear this)",
+            "Take a photo of something that makes you smile (dopamine via pixels)",
+            "Delete 5 photos from your phone (digital decluttering for the chronically screenshot-happy)",
+            "Set a timer for 1 minute and just breathe (revolutionary concept in our chaos-driven world)"
+        ];
+        
+        let currentTaskIndex = 0;
+        let isSpinning = false;
+        let isRolling = false;
+        
+        // Create floating particles
+        function createParticles() {
+            const container = document.querySelector('.particles-container');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.width = (Math.random() * 6 + 3) + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (Math.random() * 6 + 6) + 's';
+                
+                // Randomize particle colors for more ominous effect
+                const colors = ['#8b0000', '#4b0082', '#2f4f4f', '#800080'];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.background = `radial-gradient(circle, ${color}, transparent)`;
+                
+                container.appendChild(particle);
+            }
+        }
+        
+        function spinWheel() {
+            if (isSpinning) return;
+            
+            isSpinning = true;
+            const wheel = document.getElementById('wheel');
+            const taskContainer = document.getElementById('currentTask');
+            const result = document.getElementById('result');
+            
+            // Hide previous results
+            taskContainer.classList.add('hidden');
+            result.classList.add('hidden');
+            
+            // Random spin calculation
+            const spins = Math.floor(Math.random() * 5) + 5; // 5-10 full rotations
+            const finalAngle = Math.floor(Math.random() * 360);
+            const totalRotation = spins * 360 + finalAngle;
+            
+            wheel.style.transform = `rotate(${totalRotation}deg)`;
+            
+            // Calculate which task was selected
+            const normalizedAngle = (360 - (finalAngle % 360)) % 360;
+            currentTaskIndex = Math.floor(normalizedAngle / 36);
+            
+            setTimeout(() => {
+                document.getElementById('taskText').textContent = `Task ${currentTaskIndex + 1}: ${tasks[currentTaskIndex]}`;
+                taskContainer.classList.remove('hidden');
+                isSpinning = false;
+            }, 4000);
+        }
+        
+        function rollDice() {
+            if (isRolling) return;
+            
+            isRolling = true;
+            const dice = document.getElementById('simpleDice');
+            const result = document.getElementById('result');
+            
+            result.classList.add('hidden');
+            
+            // Generate random D20 roll (1-20)
+            const roll = Math.floor(Math.random() * 20) + 1;
+            
+            // Add rolling animation
+            dice.classList.add('rolling');
+            dice.textContent = '?';
+            
+            // Show numbers rapidly during roll
+            let counter = 0;
+            const rollInterval = setInterval(() => {
+                dice.textContent = Math.floor(Math.random() * 20) + 1;
+                counter++;
+                if (counter > 20) {
+                    clearInterval(rollInterval);
+                }
+            }, 100);
+            
+            setTimeout(() => {
+                // Remove animation and show final result
+                dice.classList.remove('rolling');
+                dice.textContent = roll;
+                showResult(roll);
+                isRolling = false;
+            }, 2000);
+        }
+        
+        function showResult(roll) {
+            const result = document.getElementById('result');
+            let message = '';
+            let className = '';
+            
+            if (roll === 1) {
+                message = `🎲 CRITICAL CATASTROPHE (${roll}/20) - The cosmic forces of procrastination have utterly abandoned you! The darkness demands IMMEDIATE sacrifice! Drop everything and perform this soul-crushing task RIGHT NOW. The void is watching, and it's not impressed with your life choices.`;
+                className = 'critical';
+            } else if (roll === 20) {
+                message = `🎲 ASCENSION TO GODHOOD! (${roll}/20) - You've achieved the impossible: peak manipulation mastery! The universe bows to your superior delegation skills. Find a willing victim—er, helpful soul—to complete this menial task while you bask in the golden glow of guilt-free doom scrolling. You magnificent, Machiavellian mastermind.`;
+                className = 'nat20';
+            } else if (roll >= 10) {
+                message = `🎲 DARK VICTORY (${roll}/20) - The shadows have smiled upon your procrastination rituals! You've successfully weaponized probability against productivity. The task demons retreat in defeat, leaving you free to continue your descent into delicious, unrepentant laziness. Your dysfunction remains beautifully intact.`;
+                className = 'success';
+            } else {
+                message = `🎲 BETRAYED BY CHAOS (${roll}/20) - Even the dice have turned against you in this cruel, unforgiving universe. The probability gods demand blood sacrifice in the form of... *dramatic pause* ...actual effort. Steel yourself for the nightmare of completing a simple 60-second task like some sort of functional human being. How tragically ordinary.`;
+                className = 'failure';
+            }
+            
+            result.textContent = message;
+            result.className = `result ${className}`;
+            result.classList.remove('hidden');
+        }
+        
+        // Initialize particles on load
+        createParticles();
+        
+        // Add some dynamic background effects
+        setInterval(() => {
+            const particles = document.querySelectorAll('.particle');
+            particles.forEach(particle => {
+                if (Math.random() < 0.1) {
+                    particle.style.opacity = Math.random() * 0.5 + 0.1;
+                }
+            });
+        }, 2000);
+    </script>
+</body>
+</html>
